@@ -65,10 +65,10 @@ You can check on your SBATCH submission in real time in the `logs` folder to mak
 ### Creating confusion matrices
 Now we have our files, but they are too chunky to work easily with (we have too many files and they are too big)! Confusion matrices are 2D histograms for the number of true electrons vs. the number of counted electrons (electrons counted by the trigger scintillator). This means we only need the counted electron number from each file, since we've already set the number of true electrons in the sample generation. This is found in `@TriggerPadTracks_sim.size()` in the ROOT File.
 
-For this reason, there is `drawTracksvsEventsFromTree.C` that makes a new ROOT file just with the tracks (counted electrons) vs. events and with the correct number of bins. To run this over multiple files, we have another Bash script, `slurm_draw_sub.sh`, which has options mult `-m` and version `-v` to be used as before. The script **also expects** a `.txt` file of the form `inclusive[mult]e-[version].txt`, where now `version` does not require `ldmx-det-` in front of your personalized phrase anymore (redundant), unless you want to keep it for consistency. Thus, your first step is to create a list for your new samples. In a loop, this would be
+For this reason, there is `drawTracksvsEventsFromTree.C` that makes a new ROOT file just with the tracks (counted electrons) vs. events and with the correct number of bins. To run this over multiple files, we have another Bash script, `slurm_draw_sub.sh`, which has options mult `-m` and version `-v` to be used as before. The script **also expects** a `.txt` file of the form `inclusive[mult]e-[version].txt`, where now `version` does not require `ldmx-det-` in front of your personalized phrase anymore (redundant), unless you want to keep it for consistency. Thus, your first step is to create a list for your new samples. In a loop, this would be `for m in {1..4}; do ls /path/to/sample-out/inclusive_${m}e/*.root > inclusive${m}e-version.txt`. Then you can use
 `for m in {1..4}; do sbatch slurm_draw_sub.sh -m ${m} -v yourversion; done`.
 
-When this has finished running, you can 
+We are close!
 
 
 
