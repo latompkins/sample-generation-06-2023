@@ -2,7 +2,7 @@
 ## Getting Started
 I use VSCode Remote SSH as my editor, and I would recommend it! Working with lots of files requires being really familiar with where everything is in what directory, and I find this much easier than just navigating Bash with vim or emacs. https://code.visualstudio.com/docs/remote/ssh
 ### Installing `ldmx-sw`
-At the bottom of https://github.com/LDMX-Software/ldmx-sw/tree/521c4cb4b009ebef7e1d251907571c0ee5e33e53, in the README, follow the Quick Start directions from cloning the repo onwards. Don't forget to set up an SSH key in SDF! For the path of least resistance, install in the directory you will be producing your samples in (the samples can be in a subdirectory). In this case, the directory to install in would be `sample-generation-06-2023`.
+At the bottom of https://github.com/LDMX-Software/ldmx-sw/tree/521c4cb4b009ebef7e1d251907571c0ee5e33e53, in the README, follow the Quick Start directions from cloning the repo onwards. Don't forget to set up an SSH key in SDF! For the path of least resistance, install in the directory you will be producing your samples in (the samples can be in a subdirectory).
 ### Using ROOT
 Start by running `source /sdf/group/hps/users/bravo/src/root/buildV62202/bin/thisroot.sh`. Now you can use ROOT. In order to get to the ROOT interface, enter `root`. Now try using a TBrowser: enter `new TBrowser()` into the ROOT terminal. This will allow you to open `.root` files to check if they are broken. If it's broken, you won't be able to open the file at all.
 
