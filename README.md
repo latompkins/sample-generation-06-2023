@@ -66,13 +66,8 @@ You can check on your SBATCH submission in real time in the `logs` folder to mak
 Now we have our files, but they are too chunky to work easily with (we have too many files and they are too big)! Confusion matrices are 2D histograms for the number of true electrons vs. the number of counted electrons (electrons counted by the trigger scintillator). This means we only need the counted electron number from each file, since we've already set the number of true electrons in the sample generation. This is found in `@TriggerPadTracks_sim.size()` in the ROOT File.
 
 For this reason, there is `drawTracksvsEventsFromTree.C` that makes a new ROOT file just with the tracks (counted electrons) vs. events and with the correct number of bins. To run this over multiple files, we have another Bash script, `slurm_draw_sub.sh`, which has options mult `-m` and version `-v` to be used as before. The script **also expects** a `.txt` file of the form `inclusive[mult]e-[version].txt`, where now `version` does not require `ldmx-det-` in front of your personalized phrase anymore (redundant), unless you want to keep it for consistency. Thus, your first step is to create a list for your new samples. In a loop, this would be `for m in {1..4}; do ls /path/to/sample-out/inclusive_${m}e/*.root > inclusive${m}e-version.txt`. Then you can use
-`for m in {1..4}; do sbatch slurm_draw_sub.sh -m ${m} -v yourversion; done`.
+`for m in {1..4}; do sbatch slurm_draw_sub.sh -m ${m} -v yourversion; done` to make the output files that you want in your desired output directory.
 
-We are close!
+We are close! Now we have all of the files we need, we want to condense all of the information into one big file (so we don't need to run the same script over and over again). To do this, we use the ROOT command `hadd`, which adds histograms together (ex. `hadd newFileName.root batchFileConvention*.root` would add up all of the histograms of the batch files and output them into `newFileName.root`, *include `-f` if you're remaking `newFileName.root`*). For my output directory set up, I like to `cd geometry-changes/ldmx-det-my-version/` and then use `for n in {1..4}; do hadd inclusive${n}e/inclusive${n}e-my-version.root inclusive${n}e/*.root; done`.
 
-
-
-
-## Troubleshooting
-- If `ldmx cmake
-## 
+Finally, we can transfer our newly compiled big histogram files to our working directory for creating confusion matrices. `ConfusionMatrix.C` takes one input parameter, which is your version name. It requires files for 1-4e multiplicities and outputs a 2D colored histogram showing the number of true electrons vs. counted electrons (from tracking). We are done!
