@@ -98,13 +98,35 @@ This custom geometry changes the gaps between trigger scintillator pad bars from
 2. In `constants.gdml`, find `<constant name="trigger_pad_bar_gap"        value="0.3*mm" />`. Replace `0.3` with `0.2`.
 3. Configure the LDMX-SW build as necessary.
 4. Generate the sample files.
-	a. example files can be found in `/sdf/group/ldmx/users/meganloh/samples/geometry-changes/ldmx-det-v14-200um-gap`
-5. Extract tracks vs events.
-	a. example files can be found in `/sdf/group/ldmx/users/meganloh/confusion_matrix/tracksvsevents/v14-200um-gap`
-	b. example 1e list is `/sdf/group/ldmx/users/meganloh/confusion_matrix/inclusive1e-v14-200um-gap.txt`
-6. `hadd` files with same electron multiplicity.
-	a. example 1e file is `/sdf/group/ldmx/users/meganloh/confusion_matrix/inclusive1e-v14-200um-gap.root`
-7. Plot the confusion matrix.
-	a. example `.png` is `/sdf/group/ldmx/users/meganloh/confusion_matrix/confusion-matrix-v14-200umm-gap.png`
 
-## List of geometry changes
+  a. example files can be found in `/sdf/group/ldmx/users/meganloh/samples/geometry-changes/ldmx-det-v14-200um-gap`
+5. Extract tracks vs events.
+
+  a. example files can be found in `/sdf/group/ldmx/users/meganloh/confusion_matrix/tracksvsevents/v14-200um-gap`
+  b. example 1e list is `/sdf/group/ldmx/users/meganloh/confusion_matrix/inclusive1e-v14-200um-gap.txt`
+6. `hadd` files with same electron multiplicity.
+
+  a. example 1e file is `/sdf/group/ldmx/users/meganloh/confusion_matrix/inclusive1e-v14-200um-gap.root`
+7. Plot the confusion matrix.
+
+  a. example `.png` is `/sdf/group/ldmx/users/meganloh/confusion_matrix/confusion-matrix-v14-200umm-gap.png`
+
+## Current list of geometry study tasks
+* Changing bar parameters for all trigger scintillator (TS) modules
+  * ldmx-det-v14 with 50 bars per TS module (DONE)
+  * ldmx-det-v12 with 48 bars per TS module (DONE)
+  * ldmx-det-v14 with 96 bars per TS module with 1.5 mm height and half the current gap size
+  * 1-4e multiplicities, 200k events each
+* Changing bar gaps
+  * ldmx-det-v14 with 200 um gaps (DONE)
+  * ldmx-det-v14 with 100 um gaps (a good place to start!)
+  * 1-4e multiplicities, 200k events each
+* Change the location of the upstream modules
+  * 2 mm between the tagger tracker and the TS modules, 2mm in between the two upstream modules, upstream model x-position should be the same as the tagger tracker (DONE)
+    * 
+* Add a vertical bar layer
+* Debug beam parameters for 1e by checking the center of the beam relative to the bar's center
+* Validate geometry changes
+  * Check for overlaps
+  * Create G4vis (Geant4 visualization) of geometry changes
+  * Create plots with simhit distributions
