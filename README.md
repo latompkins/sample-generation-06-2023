@@ -28,6 +28,7 @@ To exit ROOT, enter `.q`.
 - `sbatch [something to run]` to submit a script.
 - `squeue -u yourusername` to check your running submissions.
 - `scancel ###` or `scancel -u yourusername` to manually cancel any failing or faulty submissions.
+- You can run a maximum of 50 submissions at one time!
 
 ### Bash commands:
 - My most used command is `ctrl`+`R`, which lets you reverse search previous commands. Great for re-running things or making small changes to previous commands! To iterate through results, use `ctrl`+`R` to go forwards and `ctrl`+`shift`+`R` to go backwards.
@@ -122,8 +123,8 @@ This custom geometry changes the gaps between trigger scintillator pad bars from
   * ldmx-det-v14 with 100 um gaps (a good place to start!)
   * 1-4e multiplicities, 200k events each
 * Change the location of the upstream modules
-  * 2 mm between the tagger tracker and the TS modules, 2mm in between the two upstream modules, upstream model x-position should be the same as the tagger tracker (DONE)
-    * 
+  * 2 mm between the tagger tracker and the TS modules, 2mm in between the two upstream modules, upstream model x-position should be the same as the tagger tracker (I have made the detector geometry changes but haven't generated samples. See `/sdf/group/ldmx/users/meganloh/samples/ldmx-sw/Detectors/data/ldmx-det-v14-2mm-modules`)
+  * 1e only, 1mil events
 * Add a vertical bar layer
 * Debug beam parameters for 1e by checking the center of the beam relative to the bar's center
 * Validate geometry changes
