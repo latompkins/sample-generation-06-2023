@@ -12,7 +12,10 @@ To exit ROOT, enter `.q`.
 - Similarly, in order to use ROOT, enter `source /sdf/group/hps/users/bravo/src/root/buildV62202/bin/thisroot.sh`. This is Cameron's version of ROOT.
 - If you make a change in `ldmx-sw` without making any new directories, you must `ldmx cmake \path\to\ldmx-sw` again.
 - If you make a new directory in `ldmx-sw`, you must `ldmx make install` again.
-  - Adding `-j2` is the number of cores you are using to run the command. If installing takes too long, you can add `-j4`. 
+  - Adding `-j2` is the number of cores you are using to run the command. If installing takes too long, you can add `-j4`.
+- [LDMX Github Docs](https://ldmx-software.github.io/docs/)
+- [Most recent LDCS example production scripts](https://github.com/LDMX-Software/LDCS/tree/10009bebc371f4dfc2a4c314cb1b8e1b7f69365d/productionScripts/v3.2)
+- [More example LDCS configuration scripts](https://github.com/LDMX-Software/LDCS/tree/main/exampleConfigs)
 
 ### Running scripts locally
 - Bash: `. myScript.sh var1 var2 var3`
@@ -62,14 +65,25 @@ In my version of the script, each file contains 2000 events. To submit 200,000 e
 
 You can check on your SBATCH submission in real time in the `logs` folder to make sure everything is running smoothly. You can also use `squeue -u yourusername` to see how long they have been running and whether this is reasonable (or too long, or not at all!).
 
+*By this point, you will have populated your output directory with many ROOT files. These newly generated ROOT files will contain (at least) two trees, `LDMX_Events` and `LDMX_Run`. If you open `LDMX_Events`, you should see 20 or so branches with various headers such as `SimParticles`, `EcalSimHits`, `trigScintDigisPad#`, etc., each with the "pass name" `sim`. The branch of relevance is `TriggerPadTracks`. You can check some branches to see if the histograms are properly populated.*
+
 ### Creating confusion matrices
 Now we have our files, but they are too chunky to work easily with (we have too many files and they are too big)! Confusion matrices are 2D histograms for the number of true electrons vs. the number of counted electrons (electrons counted by the trigger scintillator). This means we only need the counted electron number from each file, since we've already set the number of true electrons in the sample generation. This is found in `@TriggerPadTracks_sim.size()` in the ROOT File.
 
 For this reason, there is `drawTracksvsEventsFromTree.C` that makes a new ROOT file just with the tracks (counted electrons) vs. events and with the correct number of bins. To run this over multiple files, we have another Bash script, `slurm_draw_sub.sh`, which has options mult `-m` and version `-v` to be used as before. The script **also expects** a `.txt` file of the form `inclusive[mult]e-[version].txt`, where now `version` does not require `ldmx-det-` in front of your personalized phrase anymore (redundant), unless you want to keep it for consistency. Thus, your first step is to create a list for your new samples. In a loop, this would be `for m in {1..4}; do ls /path/to/sample-out/inclusive_${m}e/*.root > inclusive${m}e-version.txt`. Then you can use
 `for m in {1..4}; do sbatch slurm_draw_sub.sh -m ${m} -v yourversion; done` to make the output files that you want in your desired output directory.
 
+*Check your output directory: you should see however many files you generated, and each file should contain one histogram called `tracksVsEvents`. The value of each bin is the value on the left of the bin. We can expect some overcounting and undercounting (more under than over), but the bin with the most events should hopefully be the true electron multiplicity.*
+
 We are close! Now we have all of the files we need, we want to condense all of the information into one big file (so we don't need to run the same script over and over again). To do this, we use the ROOT command `hadd`, which adds histograms together (ex. `hadd newFileName.root batchFileConvention*.root` would add up all of the histograms of the batch files and output them into `newFileName.root`, *include `-f` if you're remaking `newFileName.root`*). For my output directory set up, I like to `cd geometry-changes/ldmx-det-my-version/` and then use `for n in {1..4}; do hadd inclusive${n}e/inclusive${n}e-my-version.root inclusive${n}e/*.root; done`.
 
-Finally, we can transfer our newly compiled big histogram files to our working directory for creating confusion matrices. `ConfusionMatrix.C` takes one input parameter, which is your version name. It requires files for 1-4e multiplicities and outputs a 2D colored histogram showing the number of true electrons vs. counted electrons (from tracking). We are done!
+*This big file should have the same `tracksVsEvents` histogram as before, but with a wider variance.*
 
-Feel free to refer to my user directory `/sdf/group/ldmx/users/meganloh` for any examples.
+Finally, we can transfer our newly compiled big histogram files to our working directory for creating confusion matrices. `ConfusionMatrix.C` takes one input parameter, which is your version name. It requires files for 1-4e multiplicities and outputs a 2D colored histogram showing the number of true electrons vs. counted electrons (from tracking). For example, `root -l -b -q 'confusionMatrix.C+("my-version")'`. We are done!
+
+*This outputs a `.root` file in case you want to do some additional manipulations and a `.png` file of the 2D histogram.*
+
+Feel free to refer to my user directory `/sdf/group/ldmx/users/meganloh` for examples.
+
+### Reproducing `ldmx-det-v14-200um-gap`
+Th
