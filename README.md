@@ -14,6 +14,7 @@ To exit ROOT, enter `.q`.
 - If you make a new directory in `ldmx-sw`, you must `ldmx make install` again.
   - Adding `-j2` is the number of cores you are using to run the command. If installing takes too long, you can add `-j4`.
 - [LDMX Github Docs](https://ldmx-software.github.io/docs/)
+- [LDMX-SW Github](https://github.com/LDMX-Software/ldmx-sw/tree/521c4cb4b009ebef7e1d251907571c0ee5e33e53), useful for its README and searching for certain specific commands by their name
 - [Most recent LDCS example production scripts](https://github.com/LDMX-Software/LDCS/tree/10009bebc371f4dfc2a4c314cb1b8e1b7f69365d/productionScripts/v3.2)
 - [More example LDCS configuration scripts](https://github.com/LDMX-Software/LDCS/tree/main/exampleConfigs)
 
@@ -52,11 +53,15 @@ To exit ROOT, enter `.q`.
 - Once the appropriate geometry changes have been made, you must rerun `ldmx cmake \path\to\ldmx-sw` and `ldmx make install` to implement the changes.
 
 ## Creating custom geometry samples
+**Before you start:** you will have to change the output directories from the example `.sh` files given!
+
 `runSampleGeneration.py` actually generates the files, which is where we define the number of events per file, and where we choose what to keep in the file. However, since we typically make many files with many events, we use a Bash script to iterate over the Python script for us, which is `slurm_sample_sub.sh`. This script takes a few options:
 1) `mult, -m` electron multiplicity, or the number of true electrons entering the detector at once. Default is 1.
 2) `nFiles, -f` number of files to generate. Default is 1.
 3) `version, -v` the version of the detector geometry you want to run over! This is where you put `ldmx-det-v14-short-phrase`.
 4) `offset, -o` this is mainly for batch submissions so we can generate unique samples in reasonable batch submission sizes. This will change where your run number starts (e.g. `-o 20` makes `file-runx00021.root`). Default is 0.
+
+**Don't forget to change the output directory!**
 
 The first thing is to test that nothing is broken. Try to run the script locally over a small number of files. Batch submitting a bunch of commands that will crash/fail is not good. Try `. slurm_sample_sub.sh -v ldmx-det-v14-your-version`. If you can see that it is running through events without any failures, you can `ctrl`+`c` to stop. You are now ready to batch submit!
 
@@ -73,6 +78,8 @@ Now we have our files, but they are too chunky to work easily with (we have too 
 For this reason, there is `drawTracksvsEventsFromTree.C` that makes a new ROOT file just with the tracks (counted electrons) vs. events and with the correct number of bins. To run this over multiple files, we have another Bash script, `slurm_draw_sub.sh`, which has options mult `-m` and version `-v` to be used as before. The script **also expects** a `.txt` file of the form `inclusive[mult]e-[version].txt`, where now `version` does not require `ldmx-det-` in front of your personalized phrase anymore (redundant), unless you want to keep it for consistency. Thus, your first step is to create a list for your new samples. In a loop, this would be `for m in {1..4}; do ls /path/to/sample-out/inclusive_${m}e/*.root > inclusive${m}e-version.txt`. Then you can use
 `for m in {1..4}; do sbatch slurm_draw_sub.sh -m ${m} -v yourversion; done` to make the output files that you want in your desired output directory.
 
+**Don't forget to change the output directory!**
+
 *Check your output directory: you should see however many files you generated, and each file should contain one histogram called `tracksVsEvents`. The value of each bin is the value on the left of the bin. We can expect some overcounting and undercounting (more under than over), but the bin with the most events should hopefully be the true electron multiplicity.*
 
 We are close! Now we have all of the files we need, we want to condense all of the information into one big file (so we don't need to run the same script over and over again). To do this, we use the ROOT command `hadd`, which adds histograms together (ex. `hadd newFileName.root batchFileConvention*.root` would add up all of the histograms of the batch files and output them into `newFileName.root`, *include `-f` if you're remaking `newFileName.root`*). For my output directory set up, I like to `cd geometry-changes/ldmx-det-my-version/` and then use `for n in {1..4}; do hadd inclusive${n}e/inclusive${n}e-my-version.root inclusive${n}e/*.root; done`.
@@ -85,5 +92,19 @@ Finally, we can transfer our newly compiled big histogram files to our working d
 
 Feel free to refer to my user directory `/sdf/group/ldmx/users/meganloh` for examples.
 
-### Reproducing `ldmx-det-v14-200um-gap`
-Th
+## Reproducing `ldmx-det-v14-200um-gap`
+This custom geometry changes the gaps between trigger scintillator pad bars from 300 $\mu$m to 200 $\mu$m.
+1. Make a copy the v14 detector geometry.
+2. In `constants.gdml`, find `<constant name="trigger_pad_bar_gap"        value="0.3*mm" />`. Replace `0.3` with `0.2`.
+3. Configure the LDMX-SW build as necessary.
+4. Generate the sample files.
+	a. example files can be found in `/sdf/group/ldmx/users/meganloh/samples/geometry-changes/ldmx-det-v14-200um-gap`
+5. Extract tracks vs events.
+	a. example files can be found in `/sdf/group/ldmx/users/meganloh/confusion_matrix/tracksvsevents/v14-200um-gap`
+	b. example 1e list is `/sdf/group/ldmx/users/meganloh/confusion_matrix/inclusive1e-v14-200um-gap.txt`
+6. `hadd` files with same electron multiplicity.
+	a. example 1e file is `/sdf/group/ldmx/users/meganloh/confusion_matrix/inclusive1e-v14-200um-gap.root`
+7. Plot the confusion matrix.
+	a. example `.png` is `/sdf/group/ldmx/users/meganloh/confusion_matrix/confusion-matrix-v14-200umm-gap.png`
+
+## List of geometry changes
