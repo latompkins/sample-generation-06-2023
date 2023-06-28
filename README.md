@@ -54,7 +54,7 @@ To exit ROOT, enter `.q`.
 - Once the appropriate geometry changes have been made, you must rerun `ldmx cmake \path\to\ldmx-sw` and `ldmx make install` to implement the changes.
 
 ## Creating custom geometry samples
-**Before you start:** you will have to change the output directories from the example `.sh` files given!
+**Before you start:** you will have to change the output directories from the example `.sh` files given from my directories to yours!
 
 `runSampleGeneration.py` actually generates the files, which is where we define the number of events per file, and where we choose what to keep in the file. However, since we typically make many files with many events, we use a Bash script to iterate over the Python script for us, which is `slurm_sample_sub.sh`. This script takes a few options:
 1) `mult, -m` electron multiplicity, or the number of true electrons entering the detector at once. Default is 1.
@@ -62,7 +62,7 @@ To exit ROOT, enter `.q`.
 3) `version, -v` the version of the detector geometry you want to run over! This is where you put `ldmx-det-v14-short-phrase`.
 4) `offset, -o` this is mainly for batch submissions so we can generate unique samples in reasonable batch submission sizes. This will change where your run number starts (e.g. `-o 20` makes `file-runx00021.root`). Default is 0.
 
-**Don't forget to change the output directory!**
+**Don't forget to change the output directory the first time you run!**
 
 The first thing is to test that nothing is broken. Try to run the script locally over a small number of files. Batch submitting a bunch of commands that will crash/fail is not good. Try `. slurm_sample_sub.sh -v ldmx-det-v14-your-version`. If you can see that it is running through events without any failures, you can `ctrl`+`c` to stop. You are now ready to batch submit!
 
@@ -79,7 +79,7 @@ Now we have our files, but they are too chunky to work easily with (we have too 
 For this reason, there is `drawTracksvsEventsFromTree.C` that makes a new ROOT file just with the tracks (counted electrons) vs. events and with the correct number of bins. To run this over multiple files, we have another Bash script, `slurm_draw_sub.sh`, which has options mult `-m` and version `-v` to be used as before. The script **also expects** a `.txt` file of the form `inclusive[mult]e-[version].txt`, where now `version` does not require `ldmx-det-` in front of your personalized phrase anymore (redundant), unless you want to keep it for consistency. Thus, your first step is to create a list for your new samples. In a loop, this would be `for m in {1..4}; do ls /path/to/sample-out/inclusive_${m}e/*.root > inclusive${m}e-version.txt`. Then you can use
 `for m in {1..4}; do sbatch slurm_draw_sub.sh -m ${m} -v yourversion; done` to make the output files that you want in your desired output directory.
 
-**Don't forget to change the output directory!**
+**Don't forget to change the output directory the first time you run!**
 
 *Check your output directory: you should see however many files you generated, and each file should contain one histogram called `tracksVsEvents`. The value of each bin is the value on the left of the bin. We can expect some overcounting and undercounting (more under than over), but the bin with the most events should hopefully be the true electron multiplicity.*
 
