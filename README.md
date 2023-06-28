@@ -94,23 +94,14 @@ Finally, we can transfer our newly compiled big histogram files to our working d
 Feel free to refer to my user directory `/sdf/group/ldmx/users/meganloh` for examples.
 
 ## Reproducing `ldmx-det-v14-200um-gap`
-This custom geometry changes the gaps between trigger scintillator pad bars from 300 $\mu$m to 200 $\mu$m.
+This custom geometry changes the gaps between trigger scintillator pad bars from 300 $\mu$ m to 200 $\mu$ m.
 1. Make a copy the v14 detector geometry.
 2. In `constants.gdml`, find `<constant name="trigger_pad_bar_gap"        value="0.3*mm" />`. Replace `0.3` with `0.2`.
 3. Configure the LDMX-SW build as necessary.
-4. Generate the sample files.
-
-  a. example files can be found in `/sdf/group/ldmx/users/meganloh/samples/geometry-changes/ldmx-det-v14-200um-gap`
-5. Extract tracks vs events.
-
-  a. example files can be found in `/sdf/group/ldmx/users/meganloh/confusion_matrix/tracksvsevents/v14-200um-gap`
-  b. example 1e list is `/sdf/group/ldmx/users/meganloh/confusion_matrix/inclusive1e-v14-200um-gap.txt`
-6. `hadd` files with same electron multiplicity.
-
-  a. example 1e file is `/sdf/group/ldmx/users/meganloh/confusion_matrix/inclusive1e-v14-200um-gap.root`
-7. Plot the confusion matrix.
-
-  a. example `.png` is `/sdf/group/ldmx/users/meganloh/confusion_matrix/confusion-matrix-v14-200umm-gap.png`
+4. Generate the sample files. Example files can be found in `/sdf/group/ldmx/users/meganloh/samples/geometry-changes/ldmx-det-v14-200um-gap`
+5. Extract tracks vs events. Example files can be found in `/sdf/group/ldmx/users/meganloh/confusion_matrix/tracksvsevents/v14-200um-gap`. Example 1e list is `/sdf/group/ldmx/users/meganloh/confusion_matrix/inclusive1e-v14-200um-gap.txt`
+6. `hadd` files with same electron multiplicity. Example 1e file is `/sdf/group/ldmx/users/meganloh/confusion_matrix/inclusive1e-v14-200um-gap.root`
+7. Plot the confusion matrix. Example `.png` is `/sdf/group/ldmx/users/meganloh/confusion_matrix/confusion-matrix-v14-200umm-gap.png`
 
 ## Current list of geometry study tasks
 * Changing bar parameters for all trigger scintillator (TS) modules
