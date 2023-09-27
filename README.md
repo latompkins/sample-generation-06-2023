@@ -10,8 +10,8 @@ To exit ROOT, enter `.q`.
 ## Useful commands and resources
 - Every time you SSH into SDF, in order to use `ldmx-sw`, you must `source ldmx-sw/scripts/ldmx-env.sh`.
 - Similarly, in order to use ROOT, enter `source /sdf/group/hps/users/bravo/src/root/buildV62202/bin/thisroot.sh`. This is Cameron's version of ROOT.
-- If you make a change in `ldmx-sw` without making any new directories, you must `ldmx cmake \path\to\ldmx-sw` again.
-- If you make a new directory in `ldmx-sw`, you must `ldmx make install` again.
+- If you make a change in `ldmx-sw` without making any new directories, you must `ldmx cmake \path\to\ldmx-sw` again from the build directory.
+- If you make a new directory in `ldmx-sw`, you must also `ldmx make install` again.
   - Adding `-j2` is the number of cores you are using to run the command. If installing takes too long, you can add `-j4`.
 - [LDMX Github Docs](https://ldmx-software.github.io/docs/)
 - [LDMX-SW Github](https://github.com/LDMX-Software/ldmx-sw/tree/521c4cb4b009ebef7e1d251907571c0ee5e33e53), useful for its README and searching for certain specific commands by their name
