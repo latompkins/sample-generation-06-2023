@@ -51,7 +51,7 @@ To exit ROOT, enter `.q`.
         <positionref ref="hadron_calorimeter_pos"/> 
         <rotationref ref="identity"/> 
       </physvol> 
-- Once the appropriate geometry changes have been made, you must rerun `ldmx cmake \path\to\ldmx-sw` and `ldmx make install` to implement the changes.
+- Once the appropriate geometry changes have been made, you must rerun `cd ldmx-sw/build; ldmx cmake \path\to\ldmx-sw` and `ldmx make install` to implement the changes.
 
 ## Creating custom geometry samples
 **Before you start:** you will have to change the output directories from the example `.sh` files given from my directories to yours!
